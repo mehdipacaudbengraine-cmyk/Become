@@ -66,6 +66,7 @@ const fr = {
   'landing.logo': 'BECOME',
   'landing.nav.features': 'Fonctionnalités',
   'landing.nav.manifesto': 'Manifeste',
+  'landing.nav.login': 'Connexion',
   'landing.cta': 'Commencer',
   'landing.hero.title': 'Arrête de scroller.\nPrends ta vie en main.',
   'landing.hero.subtitle': 'La discipline n’est pas innée, elle se construit. Become est l’outil pour reprendre le contrôle.',
@@ -78,8 +79,8 @@ const fr = {
   'features.3.title': 'Focus absolu',
   'features.3.desc': 'Moins de bruit. Plus d’essentiel.',
   'quote.text': '“Le succès n’est pas un accident.\nC’est du travail acharné, de la persévérance,\nde l’apprentissage et du sacrifice.”',
-  'quote.author': '— Pelé',
-
+  'quote.author': '— Pelé',  'landing.footer.copyright': '© 2026 Become. Tous droits réservés.',
+  'landing.footer.github': 'GitHub',
   'nav.dashboard': 'Tableau',
   'nav.programs': 'Programmes',
   'nav.progress': 'Progression',
@@ -91,6 +92,18 @@ const fr = {
   'auth.signup.placeholder.email': 'vous@exemple.com',
   'auth.signup.placeholder.password': 'Min. 6 caractères',
   'programs.days': 'jours',
+
+  'onboarding.introspection.title': 'Fait un point sur ta situation actuelle',
+  'onboarding.introspection.subtitle': 'Répond à ces questions de manières honnête, c\'est pour toi.',
+  'onboarding.introspection.q1': 'Pourquoi tu n\'avances pas ?',
+  'onboarding.introspection.q1_placeholder': 'C\'est le moment de faire le point...',
+  'onboarding.introspection.q2': 'A quel point procrastines-tu ?',
+  'onboarding.introspection.q2_placeholder': 'Soit honnête avec toi même.',
+  'onboarding.introspection.q3': 'Qu\'est ce qui te manque le plus pour réussir ?',
+  'onboarding.introspection.q3_placeholder': 'Qu\'est ce que tu ne fais pas tous les jours ?',
+  'onboarding.introspection.button': 'LET\'S GO',
+  'onboarding.introspection.error': 'Erreur lors de la sauvegarde. Réessaie.',
+  'onboarding.introspection.saving': 'En cours...',
 };
 
 export default fr;

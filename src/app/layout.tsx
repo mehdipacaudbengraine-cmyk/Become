@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { SessionProvider } from '@/components/providers/SessionProvider';
+import { RootLayoutClient } from './RootLayoutClient';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body>
-        <SessionProvider>{children}</SessionProvider>
+        <RootLayoutClient>{children}</RootLayoutClient>
       </body>
     </html>
   );

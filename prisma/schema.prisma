@@ -1,0 +1,180 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  emailVerified DateTime?
+
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  currentStreak  Int       @default(0)
+  longestStreak  Int       @default(0)
+  lastActiveDate DateTime?
+  onboardingDone Boolean   @default(false)
+
+  enrollments      Enrollment[]
+  completions      TaskCompletion[]
+  introspection    Introspection?
+  beginnerTasks    BeginnerTaskCompletion[]
+  morningRoutines  MorningRoutineCompletion[]
+  eveningRoutines  EveningRoutineCompletion[]
+  journalEntries   JournalEntry[]
+}
+
+model Program {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  description  String
+  tagline      String
+  durationDays Int
+  difficulty   String
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  days        ProgramDay[]
+  enrollments Enrollment[]
+}
+
+model ProgramDay {
+  id        String   @id @default(cuid())
+  programId String
+  dayNumber Int
+  principle String
+  createdAt DateTime @default(now())
+
+  program Program     @relation(fields: [programId], references: [id], onDelete: Cascade)
+  tasks   DailyTask[]
+
+  @@unique([programId, dayNumber])
+  @@index([programId])
+}
+
+model DailyTask {
+  id           String   @id @default(cuid())
+  programDayId String
+  title        String
+  category     String
+  order        Int
+  createdAt    DateTime @default(now())
+
+  programDay  ProgramDay       @relation(fields: [programDayId], references: [id], onDelete: Cascade)
+  completions TaskCompletion[]
+
+  @@index([programDayId])
+}
+
+model Enrollment {
+  id          String    @id @default(cuid())
+  userId      String
+  programId   String
+  currentDay  Int       @default(1)
+  startedAt   DateTime  @default(now())
+  isActive    Boolean   @default(true)
+  completedAt DateTime?
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  program Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, isActive])
+  @@index([userId])
+  @@index([programId])
+}
+
+model TaskCompletion {
+  id          String   @id @default(cuid())
+  userId      String
+  taskId      String
+  completedAt DateTime @default(now())
+  date        DateTime @default(now()) @db.Date
+
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task DailyTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, taskId, date])
+  @@index([userId, date])
+}
+
+model Introspection {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  q1        String
+  q2        String
+  q3        String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model BeginnerTaskCompletion {
+  id        String   @id @default(cuid())
+  userId    String
+  day       DateTime @db.Date
+  taskKey   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, day, taskKey])
+  @@index([userId, day])
+}
+
+model MorningRoutineCompletion {
+  id        String   @id @default(cuid())
+  userId    String
+  day       DateTime @db.Date
+  taskKey   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, day, taskKey])
+  @@index([userId, day])
+}
+
+model EveningRoutineCompletion {
+  id        String   @id @default(cuid())
+  userId    String
+  day       DateTime @db.Date
+  taskKey   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, day, taskKey])
+  @@index([userId, day])
+}
+
+model JournalEntry {
+  id          String   @id @default(cuid())
+  userId      String
+  day         DateTime @db.Date
+  q1          String   @default("")
+  q2          String   @default("")
+  q3          String   @default("")
+  q4          String   @default("")
+  isValidated Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, day])
+  @@index([userId, day])
+}

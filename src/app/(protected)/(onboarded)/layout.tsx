@@ -1,44 +1,31 @@
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { ProtectedNavbar } from '@/components/layout/ProtectedNavbar';
 import { db } from '@/lib/db';
 import { ReactNode } from 'react';
 
-export const dynamic = 'force-dynamic';
-
-export default async function ProtectedLayout({
+export default async function OnboardedLayout({
   children,
 }: {
   children: ReactNode;
 }) {
   const session = await getServerSession(authOptions);
 
-  // Check authentication
   if (!session || !session.user?.id) {
     redirect('/login');
   }
 
   const userId = session.user.id as string;
 
-  // Fetch user onboarding status
+  // Check if user has completed onboarding
   const user = await db.user.findUnique({
     where: { id: userId },
     select: { onboardingDone: true },
   });
 
-  // If onboarding not done, redirect to introspection form
-  // (The introspection page itself will verify and allow this)
   if (!user?.onboardingDone) {
     redirect('/onboarding/introspection');
   }
 
-  return (
-    <div className="min-h-screen bg-black">
-      <ProtectedNavbar />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {children}
-      </main>
-    </div>
-  );
+  return children;
 }

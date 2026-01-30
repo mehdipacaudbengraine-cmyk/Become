@@ -1,0 +1,17 @@
+# dependencies
+node_modules
+.pnp
+.pnp.js
+
+# next
+.next
+out
+
+# logs
+*.log
+next_start.log
+
+# runtime files
+# Secrets
+.env
+.env.*

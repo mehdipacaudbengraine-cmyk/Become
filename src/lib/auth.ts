@@ -1,73 +1,54 @@
-import NextAuth from "next-auth";
-import { getServerSession } from "next-auth";
-import type { NextAuthOptions } from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import type { Adapter } from "next-auth/adapters";
-import bcrypt from "bcryptjs";
 
-import { db } from "@/lib/db";
+
+import NextAuth from 'next-auth';
+import { getServerSession } from 'next-auth';
+import type { NextAuthOptions, Session } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import type { JWT } from 'next-auth/jwt';
+import bcrypt from 'bcryptjs';
+
+import { db } from '@/lib/db';
 
 export const authOptions: NextAuthOptions = {
-  // ✅ Cast Adapter = évite le conflit de types entre versions
-  adapter: PrismaAdapter(db) as Adapter,
-
-  session: { strategy: "jwt" },
+  // ⚠️ NO ADAPTER - JWT strategy manages sessions
+  session: { strategy: 'jwt' },
+  secret: process.env.NEXTAUTH_SECRET,
+  
   callbacks: {
-    // Ensure redirect URLs are validated and never point to a different host/port.
-    // This prevents NextAuth from redirecting to an unexpected origin (e.g. 3002).
     async redirect({ url, baseUrl }) {
-      // Allow relative paths
       if (url?.startsWith('/')) return `${baseUrl}${url}`;
-
       try {
         const target = new URL(url);
         if (target.origin === baseUrl) return url;
       } catch (e) {
-        // If URL parsing fails, fallback to baseUrl
+        // Fallback
       }
-
       return baseUrl;
     },
-    async jwt({ token, user }) {
-      // On initial sign in, `user` is available — persist its id to the token
-      if (user && (user as any).id) {
-        (token as any).id = (user as any).id;
-        (token as any).userId = (user as any).id;
-        // also mirror to `sub` since some parts may read `sub`
-        (token as any).sub = (user as any).id;
-      }
 
-      // If token already has sub but not id, ensure id is set
-      if (!(token as any).id && (token as any).sub) {
-        (token as any).id = (token as any).sub;
+    async jwt({ token, user }: { token: JWT; user?: any }) {
+      // ✅ On sign in, store the Prisma User.id in the token
+      if (user?.id) {
+        token.sub = user.id;
       }
-
-      if (!(token as any).userId && (token as any).id) {
-        (token as any).userId = (token as any).id;
-      }
-
       return token;
     },
 
-    async session({ session, token }) {
-      // Ensure session.user.id exists and comes from token.id
-      const id = (token as any).id || (token as any).sub || (token as any).userId;
-      if (id) {
-        session.user = session.user || ({} as any);
-        (session.user as any).id = id;
+    async session({ session, token }: { session: Session; token: JWT }) {
+      // ✅ Ensure session.user.id comes from token.sub (Prisma User.id)
+      if (token.sub) {
+        session.user.id = token.sub;
       }
-
       return session;
     },
   },
 
   providers: [
-    Credentials({
-      name: "Credentials",
+    CredentialsProvider({
+      name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
 
       async authorize(credentials) {
@@ -76,7 +57,7 @@ export const authOptions: NextAuthOptions = {
 
         if (!email || !password) return null;
 
-        // ⚠️ ici on utilise passwordHash (pas password)
+        // Fetch user from Prisma
         const user = await db.user.findUnique({
           where: { email },
           select: {
@@ -89,10 +70,11 @@ export const authOptions: NextAuthOptions = {
 
         if (!user?.passwordHash) return null;
 
-        const ok = await bcrypt.compare(password, user.passwordHash);
-        if (!ok) return null;
+        // Verify password
+        const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+        if (!isPasswordValid) return null;
 
-        // ✅ On force name non-null pour calmer TS si ton type l’exige
+        // ✅ Return Prisma User object with id
         return {
           id: user.id,
           email: user.email,
