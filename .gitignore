@@ -15,3 +15,4 @@ next_start.log
 # Secrets
 .env
 .env.*
+!.env.example
