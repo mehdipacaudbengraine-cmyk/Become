@@ -39,13 +39,18 @@ export default function Features() {
   ];
 
   return (
-    <section id="features" className="py-20 sm:py-32">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <section id="features" className="py-16 sm:py-24">
+      {/* Section separator */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="h-px w-full bg-white/5 mb-16 sm:mb-24" />
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           {features.map((feature, idx) => {
             const Icon = feature.icon;
             return (
-              <div key={idx} className="bg-black/40 border border-gray-800 rounded-[16px] p-8 hover:border-gray-700 transition-all duration-300">
+              <div key={idx} className="be-card be-glass p-6 sm:p-8 be-card-interactive">
                 <div className="mb-4">
                   <Icon />
                 </div>
