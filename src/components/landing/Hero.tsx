@@ -11,14 +11,14 @@ export default async function Hero() {
   const primaryHref = session ? '/onboarding/introspection' : '/signup';
 
   return (
-    <section className="relative min-h-[calc(100vh-73px)] flex items-center justify-center py-14 sm:py-24 lg:py-28 overflow-hidden">
+    <section className="relative min-h-[calc(100vh-64px)] flex items-center justify-center">
       {/* Radial gradient depth */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_60%_40%_at_50%_40%,rgba(255,255,255,0.04),transparent_70%)]" />
 
       {/* Content — floats directly on the grid */}
-      <div className="relative w-full max-w-3xl mx-auto px-5 sm:px-6 lg:px-8 text-center space-y-6 sm:space-y-10">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-14 pb-10 sm:py-32">
         {/* Headline */}
-        <h1 className="text-[1.75rem] sm:text-5xl lg:text-6xl font-bold leading-[1.05] sm:leading-[1.1] tracking-tight bg-gradient-to-b from-white via-zinc-300 to-zinc-700 bg-clip-text text-transparent [text-wrap:balance] max-w-[20ch] sm:max-w-none mx-auto">
+        <h1 className="text-[1.75rem] sm:text-5xl lg:text-6xl font-bold leading-[1.05] sm:leading-tight tracking-tight bg-gradient-to-b from-white via-zinc-300 to-zinc-700 bg-clip-text text-transparent [text-wrap:balance] max-w-[20ch] sm:max-w-none mx-auto">
           {t('landing.hero.title')
             .split('\n')
             .map((line: string, i: number) => (
