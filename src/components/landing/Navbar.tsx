@@ -14,9 +14,9 @@ export default function Navbar() {
           <a href="#features" className="text-white/60 hover:text-white transition-colors duration-200">
             {t('landing.nav.features')}
           </a>
-          <a href="#manifesto" className="text-white/60 hover:text-white transition-colors duration-200">
+          <Link href="/manifesto" className="text-white/60 hover:text-white transition-colors duration-200">
             {t('landing.nav.manifesto')}
-          </a>
+          </Link>
         </div>
 
         <div className="flex items-center gap-3">

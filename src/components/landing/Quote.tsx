@@ -2,7 +2,7 @@ import t from '@/lib/i18n/t';
 
 export default function Quote() {
   return (
-    <section id="manifesto" className="relative py-16 sm:py-24">
+    <section className="relative py-16 sm:py-24">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Separator */}
         <div className="h-px w-full bg-white/5 mb-10 sm:mb-12" />

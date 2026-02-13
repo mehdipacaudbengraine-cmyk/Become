@@ -11,6 +11,12 @@ export default function Footer() {
           </p>
           
           <div className="flex items-center gap-6">
+            <Link
+              href="/manifesto"
+              className="text-sm text-white/40 hover:text-white/70 transition-colors"
+            >
+              Manifeste
+            </Link>
             <a
               href="https://github.com"
               target="_blank"
